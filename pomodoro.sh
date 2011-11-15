@@ -17,7 +17,7 @@ startmsg="Pomodoro started, you have 25 minutes left"
 endmsg="Pomodoro ended, stop the work and take short break"
 killmsg="Pomodoro stopped, restart when you are ready"
 
-xnotify="notify-send -t 5000 -u critical -i \"$icon\" \"$summary\""
+xnotify="notify-send -t 5000 -u critical -i $DIR/icons/running.png $summary"
 
 ( flock -x 200
 
