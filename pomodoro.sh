@@ -17,7 +17,9 @@ startmsg="Pomodoro started, you have 25 minutes left"
 endmsg="Pomodoro ended, stop the work and take short break"
 killmsg="Pomodoro stopped, restart when you are ready"
 
-xnotify="notify-send -t 5000 -u critical -i $DIR/icons/running.png $summary"
+function xnotify () {
+    notify-send -t 5000 -i "$DIR/icons/running.png" "$summary" "$1"
+}
 
 ( flock -x 200
 
@@ -32,11 +34,11 @@ rtime=$(( cycle + stime - ctime))
 
 if [ "$1" == "-n" ] ; then
 	if [ $stime -eq 0 ] ; then
-		$xnotify "$startmsg"
+		xnotify "$startmsg"
 		echo $ctime > "$state"
 
 	else
-		$xnotify "$killmsg"
+		xnotify "$killmsg"
 		echo "" > "$state"
 
 	fi
@@ -48,7 +50,7 @@ else
 		echo "<tool>No Pomodoro Running</tool>"
 
 	elif [ $rtime -lt 0 ] ; then
-		$xnotify "$endmsg"
+		xnotify "$endmsg"
 		echo "" > "$state"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
 		echo "<tool>No Pomodoro Running</tool>"
