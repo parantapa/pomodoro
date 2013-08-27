@@ -50,6 +50,7 @@ else
 		echo "<tool>No Pomodoro Running</tool>"
 
 	elif [ $rtime -lt 0 ] ; then
+		aplay "$DIR/cow.wav"
 		xnotify "$endmsg"
 		echo "" > "$state"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
