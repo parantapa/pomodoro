@@ -4,7 +4,8 @@
 # This is intended to be used with xfce4-genmon-plugin.
 
 size=24		# Icon size in pixels
-ptime=25	# Time for the pomodoro cycle in minutes
+ptime=25	# Time for the pomodoro cycle (in minutes)
+notify_time=5	# Time for notifcation to hang (in seconds)
 
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -12,13 +13,14 @@ state="$DIR/state"
 lock="$DIR/lock"
 
 cycle=$(( ptime * 60 ))
+notify_time=$(( notify_time * 1000 ))
 summary="Pomodoro"
-startmsg="Pomodoro started, you have 25 minutes left"
+startmsg="Pomodoro started, you have $ptime minutes left"
 endmsg="Pomodoro ended, stop the work and take short break"
 killmsg="Pomodoro stopped, restart when you are ready"
 
 function xnotify () {
-    notify-send -t 5000 -i "$DIR/icons/running.png" "$summary" "$1"
+    notify-send -t $notify_time -i "$DIR/icons/running.png" "$summary" "$1"
 }
 
 ( flock -x 200
