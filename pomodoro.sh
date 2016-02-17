@@ -53,6 +53,7 @@ else
 
 	elif [ $rtime -lt 0 ] ; then
 		xnotify "$endmsg"
+		zenity --info --text="$endmsg"
 		echo "" > "$state"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
 		echo "<tool>No Pomodoro Running</tool>"
