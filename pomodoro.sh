@@ -52,6 +52,7 @@ else
 		echo "<tool>No Pomodoro Running</tool>"
 
 	elif [ $rtime -lt 0 ] ; then
+		aplay "$DIR/cow.wav"
 		xnotify "$endmsg"
 		zenity --info --text="$endmsg"
 		echo "" > "$state"
