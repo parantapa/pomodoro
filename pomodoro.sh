@@ -3,8 +3,8 @@
 # This is a simple script for pomodoro timer.
 # This is intended to be used with xfce4-genmon-plugin.
 
-size=24		# Icon size in pixels
-ptime=25	# Time for the pomodoro cycle (in minutes)
+size=24         # Icon size in pixels
+ptime=25        # Time for the pomodoro cycle (in minutes)
 notify_time=5	# Time for notifcation to hang (in seconds)
 
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -19,7 +19,7 @@ startmsg="Pomodoro started, you have $ptime minutes left"
 endmsg="Pomodoro ended, stop the work and take short break"
 killmsg="Pomodoro stopped, restart when you are ready"
 
-function xnotify () {
+xnotify () {
     notify-send -t $notify_time -i "$DIR/icons/running.png" "$summary" "$1"
 }
 
