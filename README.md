@@ -2,7 +2,8 @@
 
 This bash script uses `xfce4-genmon-plugin` and `libnotify` to create a simple
 Pomodoro timer for Xfce4 panel. After `xfce4-genmon-plugin` is added to the
-panel - it should point to the `pomodoro.sh` script.
+panel - it should point to the `pomodoro.sh` script and period should be set to
+some small value (e.g. 1 second).
 
 To configure parameters please go to `pomodoro.sh` and configure:
 
