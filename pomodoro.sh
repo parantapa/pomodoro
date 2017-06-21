@@ -34,6 +34,13 @@ fi
 
 rtime=$(( cycle + stime - ctime))
 
+function format_timespan () {
+  duration=$1
+  min=$(($duration / 60))
+  sec=$(($duration % 60))
+  printf "%02d:%02d" $min $sec
+}
+
 if [ "$1" == "-n" ] ; then
   if [ $stime -eq 0 ] ; then
     xnotify "$startmsg"
@@ -58,7 +65,7 @@ else
     aplay "$DIR/stop.wav"
   else
     echo "<img>$DIR/icons/running$size.png</img>"
-    echo "<tool>You have $(( rtime / 60 )):$(( rtime % 60 )) min left</tool>"
+    echo "<tool>You have `format_timespan $rtime` min left</tool>"
   fi
 fi
 ) 200> "$lock"
