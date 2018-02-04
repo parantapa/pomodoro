@@ -129,18 +129,25 @@ else
 
 		else
 			display_mode="Work"
+			display_icon="running"
 			if [ $mode == "shortbreak" ] ; then
 				display_mode="Short break"
+				display_icon="stopped"
 			elif [ $mode == "longbreak" ] ; then
 				display_mode="Long break"
+				display_icon="stopped"
 			fi
 
 		fi
 
-		echo "<img>$DIR/icons/running$size.png</img>"
-		echo "<tool>$display_mode: You have $(( remaining_time / 60 )):$(( remaining_time % 60 )) min left [#$saved_cycle_count]</tool>"
+		# when pomodoro is off or break is active stop icon is displayed,
+		# but user can intuitively and immidiatelly notice the difference,
+		# because if it is break remaining time is displayed.
+		remaining_time_display=$(printf "%02d:%02d" $(( remaining_time / 60 )) $(( remaining_time % 60 )))
+		echo "<txt>$remaining_time_display</txt>"
+		echo "<img>$DIR/icons/$display_icon$size.png</img>"
+		echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
 	fi
 fi
 
 ) 200> "$lock"
-
