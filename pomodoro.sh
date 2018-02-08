@@ -38,6 +38,31 @@ function terminate_pomodoro () {
 	echo "" > "$savedcyclecount"
 }
 
+function render_status () {
+	mode=$1
+	remaining_time=$2
+	saved_cycle_count=$3
+
+	display_mode="Work"
+	display_icon="running"
+	if [ $mode == "shortbreak" ] ; then
+		display_mode="Short break"
+		display_icon="stopped"
+	elif [ $mode == "longbreak" ] ; then
+		display_mode="Long break"
+		display_icon="stopped"
+	fi
+
+	# when pomodoro is off or break is active stop icon is displayed,
+	# but user can intuitively and immidiatelly notice the difference,
+	# because if it is break remaining time is displayed.
+	remaining_time_display=$(printf "%02d:%02d" $(( remaining_time / 60 )) $(( remaining_time % 60 )))
+	echo "<click>$DIR/pomodoro.sh -n</click>"
+	echo "<txt>$remaining_time_display</txt>"
+	echo "<img>$DIR/icons/$display_icon$size.png</img>"
+	echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
+}
+
 ( flock -x 200
 
 
@@ -61,9 +86,8 @@ if [ "$1" == "-n" ] ; then
 else
 	# periodic check, and redrawing
 
-	echo "<click>$DIR/pomodoro.sh -n</click>"
-
 	if [ $mode == "idle" ] ; then
+		echo "<click>$DIR/pomodoro.sh -n</click>"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
 		echo "<tool>No Pomodoro Running</tool>"
 
@@ -93,7 +117,7 @@ else
 		remaining_time=$(( cycle_time + cycle_start_time - current_time))
 
 		msg=$startmsg
-		if [ $remaining_time -lt 0 ] ; then
+		if [ $remaining_time -le 0 ] ; then
 			# If remaining_time is is below zero for more that short break cycle,
 			# that makes pomodoro invalid.
 			# This, for example, can occure when computer was turned off.
@@ -107,18 +131,22 @@ else
 			if [ $mode == "pomodoro" ] ; then
 				cycle_count=$(($saved_cycle_count + 1))
 				cycle_mod=$(($cycle_count % $cycles_between_long_breaks))
-				newmode="shortbreak"
+				new_remaining_time=$short_break_cycle
+				new_mode="shortbreak"
 				msg=$endmsg_shortbreak
 				if [ $cycle_mod -eq 0 ] ; then
-				  newmode="longbreak"
+				  new_mode="longbreak"
 				  msg=$endmsg_longbreak
+					new_remaining_time=$long_break_cycle
 				fi
-				echo "$newmode" > $savedmode
+				echo "$new_mode" > $savedmode
 				echo "$cycle_count" > $savedcyclecount
+				render_status $new_mode $new_remaining_time $cycle_count
 
 			else
 				echo "pomodoro" > $savedmode
 				msg=$startmsg
+				render_status "pomodoro" $pomodoro_cycle $saved_cycle_count
 
 			fi
 
@@ -128,25 +156,10 @@ else
 			echo "$current_time" > "$savedtime"
 
 		else
-			display_mode="Work"
-			display_icon="running"
-			if [ $mode == "shortbreak" ] ; then
-				display_mode="Short break"
-				display_icon="stopped"
-			elif [ $mode == "longbreak" ] ; then
-				display_mode="Long break"
-				display_icon="stopped"
-			fi
+			render_status $mode $remaining_time $saved_cycle_count
 
 		fi
 
-		# when pomodoro is off or break is active stop icon is displayed,
-		# but user can intuitively and immidiatelly notice the difference,
-		# because if it is break remaining time is displayed.
-		remaining_time_display=$(printf "%02d:%02d" $(( remaining_time / 60 )) $(( remaining_time % 60 )))
-		echo "<txt>$remaining_time_display</txt>"
-		echo "<img>$DIR/icons/$display_icon$size.png</img>"
-		echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
 	fi
 fi
 
