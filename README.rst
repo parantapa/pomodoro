@@ -20,4 +20,19 @@ notify_time - Time for notifcation to hang (in seconds)
 
 The icons are stolen form http://www.flickr.com/photos/bcolbow/3842129453/
 
+Instructions for XUbuntu (and probably other XFCE from the family)
+------------------------------------------------------------------
+#. Download pomodoro.sh or clone repository
+#. Install xfce4-genmon-plugin: ``# apt-get install xfce4-genmon-plugin``
+#. Right click on your XFCE panel, go to **Panel** => **Add New Items...**
+#. Search for **Generic Monitor**, and select it
+#. Right click on newly added monitor in panel, and select **Properties**
+#. In new window enter path to ``pomodoro.sh`` to *Command* field
+#. Uncheck *Label*
+#. Set some smaller period in seconds. This is refresh/recheck period.
+#. Set font large enough to see remaining time clearly.
+#. Click on your new panel item
+#. Stop procrastinating and start working :)
+
+
 Happy Pomodoro !!
