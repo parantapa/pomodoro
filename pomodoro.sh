@@ -35,7 +35,7 @@ function render_status () {
 	# but user can intuitively and immidiatelly notice the difference,
 	# because if it is break remaining time is displayed.
 	remaining_time_display=$(printf "%02d:%02d" $(( remaining_time / 60 )) $(( remaining_time % 60 )))
-	echo "<click>$DIR/pomodoro.sh -n --pomodoro_time $pomodoro_time</click>"
+	echo "<click>$DIR/pomodoro.sh -n --storage \"$storage\" --pomodoro_time $pomodoro_time</click>"
 	echo "<txt>$remaining_time_display</txt>"
 	echo "<img>$DIR/icons/$display_icon$size.png</img>"
 	echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
@@ -136,7 +136,7 @@ else
 	# periodic check, and redrawing
 
 	if [ $mode == "idle" ] ; then
-		echo "<click>$DIR/pomodoro.sh -n --pomodoro_time $pomodoro_time</click>"
+		echo "<click>$DIR/pomodoro.sh -n --storage \"$storage\" --pomodoro_time $pomodoro_time</click>"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
 		echo "<tool>No Pomodoro Running</tool>"
 
