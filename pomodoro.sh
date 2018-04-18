@@ -12,11 +12,6 @@ notify_time=5	# Time for notification to hang (in seconds)
 
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-savedtime="$DIR/savedtime"
-savedmode="$DIR/savedmode"
-savedcyclecount="$DIR/savedcyclecount"
-lock="$DIR/lock"
-
 pomodoro_cycle=$(( pomodoro_time * 60 ))
 short_break_cycle=$(( short_break_time * 60 ))
 long_break_cycle=$(( long_break_time * 60 ))
@@ -63,8 +58,42 @@ function render_status () {
 	echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
 }
 
-( flock -x 200
+SOUND="ON"
+STORAGE="$DIR"
 
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -n|--click)
+    CLICK=YES
+    shift # past argument
+    ;;
+    -s|--sound)
+    SOUND="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -t|--storage)
+    STORAGE="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    *)    # unknown option
+    # ignore unknown argument
+    shift # past argument
+    ;;
+esac
+done
+
+mkdir -p "$STORAGE"
+savedtime="$STORAGE/savedtime"
+savedmode="$STORAGE/savedmode"
+savedcyclecount="$STORAGE/savedcyclecount"
+lock="$STORAGE/lock"
+
+( flock -x 200
 
 mode=$( cat "$savedmode" 2> /dev/null )
 if [ -z "$mode" ] ; then
@@ -73,7 +102,7 @@ fi
 
 current_time=$( date +%s )
 
-if [ "$1" == "-n" ] ; then
+if [ "$CLICK" == "YES" ] ; then
 	if [ "$mode" == "idle" ] ; then
 		xnotify "$startmsg"
 		echo $current_time > "$savedtime"
@@ -150,7 +179,9 @@ else
 
 			fi
 
-			aplay "$DIR/cow.wav"
+                        if [ "$SOUND" == "ON" ] ; then
+                            aplay "$DIR/cow.wav"
+                        fi
 			xnotify "$msg"
 			zenity --info --text="$msg"
 			echo "$current_time" > "$savedtime"
