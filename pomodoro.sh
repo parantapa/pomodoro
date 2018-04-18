@@ -3,24 +3,7 @@
 # This is a simple script for pomodoro timer.
 # This is intended to be used with xfce4-genmon-plugin.
 
-size=24		# Icon size in pixels
-pomodoro_time=25	# Time for the pomodoro cycle (in minutes)
-short_break_time=5	# Time for the short break cycle (in minutes)
-long_break_time=15	# Time for the long break cycle (in minutes)
-cycles_between_long_breaks=4 # How many cycles should we do before long break
-notify_time=5	# Time for notification to hang (in seconds)
-
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-pomodoro_cycle=$(( pomodoro_time * 60 ))
-short_break_cycle=$(( short_break_time * 60 ))
-long_break_cycle=$(( long_break_time * 60 ))
-notify_time=$(( notify_time * 1000 ))
-summary="Pomodoro"
-startmsg="Pomodoro started, you have $pomodoro_time minutes left"
-endmsg_shortbreak="Pomodoro ended, stop the work and take short break"
-endmsg_longbreak="Pomodoro ended, stop the work and take long break"
-killmsg="Pomodoro stopped, restart when you are ready"
 
 function xnotify () {
 	notify-send -t $notify_time -i "$DIR/icons/running.png" "$summary" "$1"
@@ -52,14 +35,18 @@ function render_status () {
 	# but user can intuitively and immidiatelly notice the difference,
 	# because if it is break remaining time is displayed.
 	remaining_time_display=$(printf "%02d:%02d" $(( remaining_time / 60 )) $(( remaining_time % 60 )))
-	echo "<click>$DIR/pomodoro.sh -n</click>"
+	echo "<click>$DIR/pomodoro.sh -n --pomodoro_time $pomodoro_time</click>"
 	echo "<txt>$remaining_time_display</txt>"
 	echo "<img>$DIR/icons/$display_icon$size.png</img>"
 	echo "<tool>$display_mode: You have $remaining_time_display min left [#$saved_cycle_count]</tool>"
 }
 
-SOUND="ON"
-STORAGE="$DIR"
+sound="on"
+storage="$DIR"
+pomodoro_time=25	# Time for the pomodoro cycle (in minutes)
+short_break_time=5	# Time for the short break cycle (in minutes)
+long_break_time=15	# Time for the long break cycle (in minutes)
+cycles_between_long_breaks=4 # How many cycles should we do before long break
 
 while [[ $# -gt 0 ]]
 do
@@ -67,16 +54,36 @@ key="$1"
 
 case $key in
     -n|--click)
-    CLICK=YES
+    click=yes
     shift # past argument
     ;;
-    -s|--sound)
-    SOUND="$2"
+    -t|--storage)
+    storage="$2"
     shift # past argument
     shift # past value
     ;;
-    -t|--storage)
-    STORAGE="$2"
+    -s|--sound)
+    sound="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --pomodoro_time)
+    pomodoro_time="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --short_break_time)
+    short_break_time="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --long_break_time)
+    long_break_time="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --cycles_between_long_breaks)
+    cycles_between_long_breaks="$2"
     shift # past argument
     shift # past value
     ;;
@@ -87,11 +94,24 @@ case $key in
 esac
 done
 
-mkdir -p "$STORAGE"
-savedtime="$STORAGE/savedtime"
-savedmode="$STORAGE/savedmode"
-savedcyclecount="$STORAGE/savedcyclecount"
-lock="$STORAGE/lock"
+mkdir -p "$storage"
+savedtime="$storage/savedtime"
+savedmode="$storage/savedmode"
+savedcyclecount="$storage/savedcyclecount"
+lock="$storage/lock"
+
+size=24		# Icon size in pixels
+notify_time=5	# Time for notification to hang (in seconds)
+
+pomodoro_cycle=$(( pomodoro_time * 60 ))
+short_break_cycle=$(( short_break_time * 60 ))
+long_break_cycle=$(( long_break_time * 60 ))
+notify_time=$(( notify_time * 1000 ))
+summary="Pomodoro"
+startmsg="Pomodoro started, you have $pomodoro_time minutes left"
+endmsg_shortbreak="Pomodoro ended, stop the work and take short break"
+endmsg_longbreak="Pomodoro ended, stop the work and take long break"
+killmsg="Pomodoro stopped, restart when you are ready"
 
 ( flock -x 200
 
@@ -102,7 +122,7 @@ fi
 
 current_time=$( date +%s )
 
-if [ "$CLICK" == "YES" ] ; then
+if [ "$click" == "yes" ] ; then
 	if [ "$mode" == "idle" ] ; then
 		xnotify "$startmsg"
 		echo $current_time > "$savedtime"
@@ -116,7 +136,7 @@ else
 	# periodic check, and redrawing
 
 	if [ $mode == "idle" ] ; then
-		echo "<click>$DIR/pomodoro.sh -n</click>"
+		echo "<click>$DIR/pomodoro.sh -n --pomodoro_time $pomodoro_time</click>"
 		echo "<img>$DIR/icons/stopped$size.png</img>"
 		echo "<tool>No Pomodoro Running</tool>"
 
@@ -179,7 +199,7 @@ else
 
 			fi
 
-                        if [ "$SOUND" == "ON" ] ; then
+                        if [ "$sound" == "on" ] ; then
                             aplay "$DIR/cow.wav"
                         fi
 			xnotify "$msg"
