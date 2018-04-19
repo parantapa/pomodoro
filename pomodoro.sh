@@ -188,12 +188,12 @@ else
 				  msg=$endmsg_longbreak
 					new_remaining_time=$long_break_cycle
 				fi
-				echo "$new_mode" > $savedmode
-				echo "$cycle_count" > $savedcyclecount
+				echo "$new_mode" > "$savedmode"
+				echo "$cycle_count" > "$savedcyclecount"
 				render_status $new_mode $new_remaining_time $cycle_count
 
 			else
-				echo "pomodoro" > $savedmode
+				echo "pomodoro" > "$savedmode"
 				msg=$startmsg
 				render_status "pomodoro" $pomodoro_cycle $saved_cycle_count
 
