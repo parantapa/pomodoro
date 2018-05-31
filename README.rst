@@ -1,6 +1,10 @@
 Pomodoro plugin for Xfce4 panel
 ===============================
 
+.. image:: https://www.macupdate.com/images/icons256/51188.png  
+
+
+
 This bash script uses xfce4-genmon-plugin and libnotify to create a simple
 Pomodoro timer for Xfce4 panel. After xfce4-genmon-plugin is added to the panel - it should point to the pomodoro.sh script
 
@@ -18,7 +22,8 @@ cycles_between_long_breaks - How many cycles should we do before long break
 
 notify_time - Time for notifcation to hang (in seconds)
 
-The icons are stolen form http://www.flickr.com/photos/bcolbow/3842129453/
+The icons are stolen form https://www.macupdate.com/app/mac/51188/pomodoro-timer
+
 
 Instructions for XUbuntu (and probably other XFCE from the family)
 ------------------------------------------------------------------
