@@ -3,12 +3,12 @@
 # This is a simple script for pomodoro timer.
 # This is intended to be used with xfce4-genmon-plugin.
 
-size=24		# Icon size in pixels
+size=32		# Icon size in pixels
 pomodoro_time=25	# Time for the pomodoro cycle (in minutes)
 short_break_time=5	# Time for the short break cycle (in minutes)
 long_break_time=15	# Time for the long break cycle (in minutes)
 cycles_between_long_breaks=4 # How many cycles should we do before long break
-notify_time=5	# Time for notification to hang (in seconds)
+notify_time=3	# Time for notification to hang (in seconds)
 
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
